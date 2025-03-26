@@ -5,6 +5,7 @@ import {
   PressableProps,
   StyleSheet,
   Text,
+  View,
 } from 'react-native';
 import {colors} from '../constants';
 
@@ -30,12 +31,14 @@ const CustomButton = ({
       disabled={inValid}
       style={({pressed}) => [
         styles.container,
-        styles[size],
+
         inValid && styles.inValid,
         pressed ? styles[`${variant}Pressed`] : styles[variant],
       ]}
       {...props}>
-      <Text style={styles[`${variant}Text`]}>{label}</Text>
+      <View style={styles[size]}>
+        <Text style={styles[`${variant}Text`]}>{label}</Text>
+      </View>
     </Pressable>
   );
 };
@@ -43,9 +46,9 @@ const CustomButton = ({
 const styles = StyleSheet.create({
   container: {
     borderRadius: 5,
-    alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 32,
+    flexDirection: 'row',
   },
   inValid: {
     opacity: 0.5,
@@ -55,33 +58,40 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   filled: {
-    backgroundColor: colors.PINK_700,
+    backgroundColor: colors.light.PINK_700,
   },
   filledText: {
-    color: colors.WHITE,
+    color: colors.light.UNCHANGE_WHITE,
   },
   outlinedText: {
-    color: colors.PINK_700,
+    color: colors.light.PINK_700,
   },
   outlined: {
     borderWidth: 1,
-    borderColor: colors.PINK_700,
-    backgroundColor: colors.WHITE,
+    borderColor: colors.light.PINK_700,
+    backgroundColor: colors.light.WHITE,
   },
   filledPressed: {
-    backgroundColor: colors.PINK_500,
+    backgroundColor: colors.light.PINK_500,
   },
   outlinedPressed: {
     borderWidth: 1,
-    borderColor: colors.PINK_700,
+    borderColor: colors.light.PINK_700,
     opacity: 0.5,
   },
   small: {},
   medium: {
     width: '50%',
     paddingVertical: deviceHeight > 700 ? 12 : 8,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  large: {width: '100%', paddingVertical: deviceHeight > 700 ? 15 : 10},
+  large: {
+    width: '100%',
+    paddingVertical: deviceHeight > 700 ? 15 : 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
 
 export default CustomButton;

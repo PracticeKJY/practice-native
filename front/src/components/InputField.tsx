@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   },
   error: {
     fontSize: 12,
-    padidngTop: 5,
+    paddingTop: 5,
     color: colors.light.RED_500,
   },
 });

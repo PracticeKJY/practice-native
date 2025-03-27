@@ -1,9 +1,9 @@
-type validateLoginProps = {
+type UserInformation = {
   email: string;
   password: string;
 };
 
-const validateLogin = (values: validateLoginProps) => {
+const validateUser = (values: UserInformation) => {
   const errors = {
     email: '',
     password: '',
@@ -20,4 +20,23 @@ const validateLogin = (values: validateLoginProps) => {
   return errors;
 };
 
-export {validateLogin};
+// 로그인 유효성 검사
+const validateLogin = (values: UserInformation) => {
+  return validateUser(values);
+};
+
+// 회원가입 유효성검사
+const validateSignup = (
+  values: UserInformation & {confirmPassword: string},
+) => {
+  const errors = validateUser(values);
+  const signupErrors = {...errors, confirmPassword: ''};
+
+  if (values.password !== values.confirmPassword) {
+    signupErrors.confirmPassword = '비밀번호가 일치하지 않습니다.';
+  }
+
+  return signupErrors;
+};
+
+export {validateLogin, validateSignup};

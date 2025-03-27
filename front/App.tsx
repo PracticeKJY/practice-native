@@ -1,6 +1,7 @@
 import {NavigationContainer} from '@react-navigation/native';
-import {StyleSheet} from 'react-native';
 import RootNavigator from './src/navigations/root/RootNavigator';
+import {QueryClientProvider} from '@tanstack/react-query';
+import queryClient from './src/api/queryClient';
 
 // View = div 주의. View안에 텍스트를 적을 때 <Text>태그 사용
 // SafeAreaView = 안드로이드 상단바, 하단바를 무시하고 화면을 사용할 수 있게 해줌
@@ -8,9 +9,11 @@ import RootNavigator from './src/navigations/root/RootNavigator';
 
 function App(): JSX.Element {
   return (
-    <NavigationContainer>
-      <RootNavigator />
-    </NavigationContainer>
+    <QueryClientProvider client={queryClient}>
+      <NavigationContainer>
+        <RootNavigator />
+      </NavigationContainer>
+    </QueryClientProvider>
   );
 }
 

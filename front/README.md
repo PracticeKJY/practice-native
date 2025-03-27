@@ -1,79 +1,343 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Domain
 
-# Getting Started
+```ts
+type MarkerColor = 'RED' | 'YELLOW' | 'GREEN' | 'BLUE' | 'PURPLE';
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+type Category = {
+  [key in MarkerColor]: string;
+};
 
-## Step 1: Start the Metro Server
+interface ImageUri {
+  id?: number;
+  uri: string;
+}
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+interface Marker {
+  id: number;
+  latitude: number;
+  longitude: number;
+  color: MarkerColor;
+  score: number;
+}
 
-To start Metro, run the following command from the _root_ of your React Native project:
+interface Post extends Marker {
+  title: string;
+  address: string;
+  date: Date | string;
+  description: string;
+}
 
-```bash
-# using npm
-npm start
-
-# OR using Yarn
-yarn start
+interface Profile {
+  id: number;
+  email: string;
+  nickname: string | null;
+  imageUri: string | null;
+  kakaoImageUri: string | null;
+  loginType: 'email' | 'kakao' | 'apple';
+}
 ```
 
-## Step 2: Start your Application
+# API
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
+## Auth
 
-### For Android
+#### POST /auth/signup
 
-```bash
-# using npm
-npm run android
+- requestBody
 
-# OR using Yarn
-yarn android
+```
+{
+    email: string
+    password: string
+}
 ```
 
-### For iOS
+#### POST /auth/signin
 
-```bash
-# using npm
-npm run ios
+- requestBody
 
-# OR using Yarn
-yarn ios
+```js
+{
+  email: string;
+  password: string;
+}
 ```
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+- responseBody
 
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
+```js
+{
+  accessToken: string;
+  refreshToken: string;
+}
+```
 
-## Step 3: Modifying your App
+#### GET /auth/refresh
 
-Now that you have successfully run the app, let's modify it.
+- header
 
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
+```js
+Authorization: `Bearer ${refreshToken}`;
+```
 
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
+- responseBody
 
-## Congratulations! :tada:
+```js
+{
+  accessToken: string;
+  refreshToken: string;
+}
+```
 
-You've successfully run and modified your React Native App. :partying_face:
+#### GET /auth/me (getProfile)
 
-### Now what?
+- responseBody
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
+```ts
+type ResponseProfile = Profile & Category;
+```
 
-# Troubleshooting
+#### PATCH /auth/me (editProfile)
 
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+- requestBody
 
-# Learn More
+```ts
+type RequestProfile = Omit<
+  Profile,
+  'id' | 'email' | 'kakaoImageUri' | 'loginType'
+>;
+```
 
-To learn more about React Native, take a look at the following resources:
+- responseBody
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+```ts
+type ResponseProfile = Profile & Category;
+```
+
+#### POST /auth/logout
+
+#### DELETE /auth/me
+
+#### PATCH /auth/category
+
+- requestBody
+
+```ts
+type Category
+```
+
+- responseBody
+
+```ts
+type ResponseProfile = Profile & Category;
+```
+
+#### POST /auth/oauth/kakao
+
+- requestBody
+
+```js
+{
+  token: string;
+}
+```
+
+- responseBody
+
+```js
+{
+  accessToken: string;
+  refreshToken: string;
+}
+```
+
+#### POST /auth/oauth/apple
+
+- requestBody
+
+```js
+{
+  identityToken: string;
+  appId: string;
+  nickname: string | null;
+}
+```
+
+- responseBody
+
+```js
+{
+  accessToken: string;
+  refreshToken: string;
+}
+```
+
+<br>
+
+## Marker & Post
+
+#### GET /markers/my
+
+- responseBody
+
+```ts
+Marker[]
+```
+
+#### GET /posts/:id
+
+- param
+
+```ts
+{
+  id: number;
+}
+```
+
+- requestBody
+
+```ts
+// type ResponsePost = Post & { images: ImageUri[] };
+
+type ResponseSinglePost = ResponsePost & {isFavorite: boolean};
+```
+
+#### DELETE /posts/:id
+
+- param
+
+```ts
+{
+  id: number;
+}
+```
+
+#### GET /posts/my
+
+- query
+
+```js
+{
+  page: number;
+}
+```
+
+- responseBody
+
+```js
+// type ResponsePost = Post & { images: ImageUri[] };
+ResponsePost[];
+```
+
+#### GET /posts/my/search
+
+- query
+
+```js
+{
+  query: string;
+  page: number;
+}
+```
+
+- responseBody
+
+```js
+// type ResponsePost = Post & { images: ImageUri[] };
+ResponsePost[];
+```
+
+#### POST /posts
+
+- requestBody
+
+```ts
+type RequestCreatePost = Omit<Post, 'id'> & {imageUris: ImageUri[]};
+```
+
+#### PATCH /post/:id
+
+- param
+
+```ts
+{
+  id: number;
+}
+```
+
+- requestBody
+
+```ts
+type RequestUpdatePost = {
+  id: number;
+  body: Omit<Post, 'id' | 'longitude' | 'latitude' | 'address'> & {
+    imageUris: ImageUri[];
+  };
+};
+```
+
+- responseBody
+
+```ts
+type ResponseSinglePost = ResponsePost & {isFavorite: boolean};
+```
+
+#### GET /posts (getCalendarPosts)
+
+- query
+
+```ts
+{
+  year: number;
+  month: number;
+}
+```
+
+- responseBody
+
+```ts
+// type CalendarPost = {
+//   id: number;
+//   title: string;
+//   address: string;
+// };
+
+type ResponseCalendarPost = Record<number, CalendarPost[]>;
+```
+
+#### GET /favorites/my
+
+- query
+
+```ts
+{
+  page: number;
+}
+```
+
+#### POST /favorites/:id
+
+- param
+
+```ts
+{
+  id: number;
+}
+```
+
+- responseBody
+
+```ts
+{
+  id: number;
+}
+```
+
+<br>
+
+## Image
+
+#### POST /images
+
+- requestBody : `FormData`
+- responseBody : `string[]`

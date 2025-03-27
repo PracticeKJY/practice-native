@@ -1,12 +1,13 @@
 import React from 'react';
 import {StyleSheet} from 'react-native';
-import AuthStackNavigator from '../stack/AuthStackNavigator';
-import MainDrawerNatigator from '../drawer/MainDrawerNatigator';
+import AuthStackNavigator from '@/navigations/stack/AuthStackNavigator';
+import useAuth from '@/hooks/queries/useAuth';
+import MainDrawerNatigator from '@/navigations/drawer/MainDrawerNatigator';
 
 const RootNavigator = () => {
-  const isLoggedIn = false;
+  const {isLogin} = useAuth();
 
-  return <>{isLoggedIn ? <MainDrawerNatigator /> : <AuthStackNavigator />}</>;
+  return <>{isLogin ? <MainDrawerNatigator /> : <AuthStackNavigator />}</>;
 };
 
 const styles = StyleSheet.create({});

@@ -1,15 +1,8 @@
 import {StackScreenProps} from '@react-navigation/stack';
 import React from 'react';
-import {
-  Button,
-  Dimensions,
-  Image,
-  SafeAreaView,
-  StyleSheet,
-  View,
-} from 'react-native';
-import {AuthStackParamList} from '../../navigations/stack/AuthStackNavigator';
-import CustomButton from '../../components/CustomButton';
+import {Dimensions, Image, SafeAreaView, StyleSheet, View} from 'react-native';
+import {AuthStackParamList} from '@/navigations/stack/AuthStackNavigator';
+import CustomButton from '@/components/CustomButton';
 
 // navigation parameter의 타입: <StackScreenProps<AuthStackParamList, 'AuthHome'>
 type AuthHomeScreenProps = StackScreenProps<AuthStackParamList, 'AuthHome'>;

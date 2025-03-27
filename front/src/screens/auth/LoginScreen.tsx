@@ -1,15 +1,18 @@
 import React, {useRef, useState} from 'react';
 import {SafeAreaView, StyleSheet, TextInput, View} from 'react-native';
-import InputField from '../../components/InputField';
-import CustomButton from '../../components/CustomButton';
-import useForm from '../../hooks/useForm';
-import {validateLogin} from '../../utils';
+import InputField from '@/components/InputField';
+import CustomButton from '@/components/CustomButton';
+import useForm from '@/hooks/useForm';
+import {validateLogin} from '@/utils';
+import useAuth from '@/hooks/queries/useAuth';
 
 // Input props
 // ****  = secureTextEntry
 // inputMode< 'none' |'text'|'decimal'|'numeric'|'tel'|'search'|'email'|'url';> = 다양한 키보드 형태
 
 const LoginScreen = () => {
+  const {loginMutation} = useAuth();
+
   const login = useForm({
     initialValue: {
       email: '',
@@ -21,7 +24,14 @@ const LoginScreen = () => {
   const passwordRef = useRef<TextInput | null>(null);
 
   const handleSubmit = () => {
-    console.log(login.values, 'values');
+    loginMutation.mutate(login.values, {
+      onSuccess: () => {
+        console.log('성공');
+      },
+      onError: error => {
+        console.log('실패', error.response?.data?.message);
+      },
+    });
   };
 
   return (
